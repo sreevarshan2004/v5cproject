@@ -8,6 +8,7 @@ import Home from './Home';
 import PropertyDetail from './utils/PropertyDetail'; 
 import AddPropertyPage from './pages/AddPropertyPage';
 import LoginPage from './pages/LoginPage';
+import AddReviewPage from './pages/AddReviewPage'; // Added Review Page
 
 // Data imports (Static Data)
 import { 
@@ -15,7 +16,8 @@ import {
   servicesData as staticServices, 
   partnersData as staticPartners, 
   whyDubaiData as staticWhyDubai, 
-  emiratesData as staticEmirates 
+  emiratesData as staticEmirates,
+  testimonials as staticTestimonials // Make sure you export this from constants.js
 } from './data/constants';
 
 const ScrollToTop = () => {
@@ -36,6 +38,7 @@ function App() {
   const [partners, setPartners] = useState([]);
   const [whyDubaiCards, setWhyDubaiCards] = useState([]);
   const [emirates, setEmirates] = useState([]);
+  const [testimonials, setTestimonials] = useState([]); // NEW STATE FOR REVIEWS
 
   // --- AUTH STATE ---
   const [user, setUser] = useState(() => {
@@ -47,23 +50,23 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch all data from Database
-        const [propsRes, servRes, partRes, whyRes, emirRes] = await Promise.all([
+        // Fetch all data from Database (Added testimonials fetch)
+        const [propsRes, servRes, partRes, whyRes, emirRes, testiRes] = await Promise.all([
           axios.get(`${API_BASE}/properties`).catch(() => ({ data: [] })),
           axios.get(`${API_BASE}/services`).catch(() => ({ data: [] })),
           axios.get(`${API_BASE}/partners`).catch(() => ({ data: [] })),
           axios.get(`${API_BASE}/whydubai`).catch(() => ({ data: [] })),
           axios.get(`${API_BASE}/emirates`).catch(() => ({ data: [] })),
+          axios.get(`${API_BASE}/testimonials`).catch(() => ({ data: [] })), // Fetch Reviews
         ]);
 
-        // ✅ FIX: MERGE Static Data + Database Data
-        // If we just replaced it, the old hardcoded cards would disappear.
-        
+        // ✅ MERGE Static Data + Database Data
         setPropertiesData([...initialPropertiesData, ...propsRes.data]);
         setServices([...staticServices, ...servRes.data]);
         setPartners([...staticPartners, ...partRes.data]);
         setWhyDubaiCards([...staticWhyDubai, ...whyRes.data]);
         setEmirates([...staticEmirates, ...emirRes.data]);
+        setTestimonials([...staticTestimonials, ...testiRes.data]); // Set Reviews
 
       } catch (error) {
         console.error("Backend Error. Using static data only.", error);
@@ -73,6 +76,7 @@ function App() {
         setPartners(staticPartners);
         setWhyDubaiCards(staticWhyDubai);
         setEmirates(staticEmirates);
+        setTestimonials(staticTestimonials);
       }
     };
 
@@ -95,7 +99,7 @@ function App() {
   const handleAdd = (newItem, section) => {
     switch (section) {
       case 'property': setPropertiesData(prev => [newItem, ...prev]); break;
-      case 'services': setServices(prev => [...prev, newItem]); break; // Appends to end
+      case 'services': setServices(prev => [...prev, newItem]); break;
       case 'partners': setPartners(prev => [...prev, newItem]); break;
       case 'whydubai': setWhyDubaiCards(prev => [...prev, newItem]); break;
       case 'emirates': setEmirates(prev => [...prev, newItem]); break;
@@ -128,10 +132,12 @@ function App() {
                 services={services}
                 partners={partners}
                 emirates={emirates}
+                testimonials={testimonials} // Pass testimonials to Home
               />
             } 
           />
           
+          {/* HOME PAGE (Alternative Path) */}
           <Route 
             path="/v5cproject" 
             element={
@@ -143,6 +149,7 @@ function App() {
                 services={services}
                 partners={partners}
                 emirates={emirates}
+                testimonials={testimonials} // Pass testimonials here too
               />
             } 
           />
@@ -155,6 +162,9 @@ function App() {
 
           {/* LOGIN PAGE */}
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+
+          {/* ADD REVIEW PAGE (Public Route) */}
+          <Route path="/add-review" element={<AddReviewPage />} />
 
           {/* ADMIN ROUTES */}
           <Route path="/admin/add-property" element={<ProtectedRoute><AddPropertyPage section="property" onSubmit={(item) => handleAdd(item, 'property')} /></ProtectedRoute>} />

@@ -20,7 +20,7 @@ export const translations = {
     subHeadline: "Dubai • India • UAE • Canada • Israel • USA",
     consultBtn: "Free Consultation",
     aboutTitle: "Our Strategic Evolution",
-    aboutText: "Founded on the principles of trust and expertise, we guide global investors through the dynamic Dubai real estate landscape with over two decades of experience.",
+    aboutText: "Founded on the principles of trust and expertise, we guide global investors through the dynamic Dubai Real Estate Landscape with over two decades of experience.",
     emiratesTitle: "The United Arab Emirates",
     emiratesHeading: "About Dubai & The Seven Emirates",
     emiratesMainContent: "Dubai stands as a premier global financial & lifestyle hub, serving as the ultimate gateway between East & West.",
@@ -100,14 +100,51 @@ export const lifeInDubaiData = [
 ];
 
 // 4. Map Districts
+// src/data/constants.js
+
 export const mapDistricts = [
-  { name: "Downtown Dubai", top: "35%", left: "42%", desc: "The heart of the city." },
-  { name: "Dubai Marina", top: "52%", left: "18%", desc: "Premium waterfront living." },
-  { name: "Palm Jumeirah", top: "45%", left: "12%", desc: "World-famous island luxury." },
-  { name: "Business Bay", top: "38%", left: "45%", desc: "The corporate nerve center." },
-  { name: "JVC", top: "60%", left: "28%", desc: "Vibrant family community." },
-  { name: "Dubai Hills", top: "50%", left: "38%", desc: "The green heart of Dubai." },
-  { name: "Expo City", top: "72%", left: "22%", desc: "Legacy of innovation." }
+  {
+    name: "Downtown Dubai",
+    lat: 25.1972,
+    lng: 55.2744,
+    desc: "The center of now. Home to Burj Khalifa, Dubai Mall, and the dancing fountains.",
+  },
+  {
+    name: "Dubai Marina",
+    lat: 25.0805,
+    lng: 55.1403,
+    desc: "Luxury waterfront living with a stunning skyline and a vibrant promenade.",
+  },
+  {
+    name: "Palm Jumeirah",
+    lat: 25.1124,
+    lng: 55.1390,
+    desc: "The world-famous artificial archipelago offering exclusive beachfront villas.",
+  },
+  {
+    name: "Business Bay",
+    lat: 25.1837,
+    lng: 55.2666,
+    desc: "The central business district of Dubai, featuring the Dubai Water Canal.",
+  },
+  {
+    name: "Dubai Hills Estate",
+    lat: 25.1118,
+    lng: 55.2536,
+    desc: "A green heart of Dubai, featuring an 18-hole championship golf course.",
+  },
+  {
+    name: "Jumeirah Beach Residence",
+    lat: 25.0776,
+    lng: 55.1328,
+    desc: "A waterfront community located against the Persian Gulf in Dubai Marina.",
+  },
+  {
+    name: "Creek Harbour",
+    lat: 25.1950,
+    lng: 55.3526,
+    desc: "The future of Dubai. A sustainable waterfront community with Creek Tower.",
+  }
 ];
 
 // 5. Services Data

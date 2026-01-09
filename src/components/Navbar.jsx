@@ -1,32 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Added for navigation
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, LogOut, User } from "lucide-react"; // Added User & LogOut icons
+import { Menu, X, LogOut, User, ChevronDown } from "lucide-react";
 
 // Import the Logo Component
 import V5CLogo from "./V5CLogo";
-// Import only animations
+// Import animations
 import { buttonHover, buttonTap } from "../utils/animations"; 
 
-const Navbar = ({ lang, setLang, content, user, onLogout }) => { // Added user & onLogout props
+const Navbar = ({ lang, setLang, content, user, onLogout }) => { 
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate(); // Hook for navigation
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false); // State for dropdown
+  const navigate = useNavigate();
 
-  // Handle Scroll to change background
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+      setLangDropdownOpen(false); // Close dropdown on scroll
+    };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Prevent body scrolling when mobile menu is open
   useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    document.body.style.overflow = menuOpen ? 'hidden' : 'unset';
   }, [menuOpen]);
 
   return (
@@ -36,84 +34,127 @@ const Navbar = ({ lang, setLang, content, user, onLogout }) => { // Added user &
         initial={{ y: -100 }} 
         animate={{ y: 0 }} 
         transition={{ duration: 0.8, type: "spring" }} 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled || menuOpen ? "bg-black/95 border-b border-white/10 py-2 shadow-2xl" : "bg-transparent py-4 md:py-6"}`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 h-20 md:h-24 flex items-center ${
+          scrolled || menuOpen 
+            ? "bg-black/80 backdrop-blur-md shadow-[0_10px_30px_-10px_rgba(0,0,0,0.8)]" 
+            : "bg-transparent"
+        }`}
       >
-        <div className="container mx-auto px-6 md:px-1 flex items-center justify-between">
-          {/* Logo */}
-          <div className="relative z-50">
-            <V5CLogo />
+        {/* --- MOVING GOLD LINE ANIMATION (Visible on Scroll) --- */}
+        <div className={`absolute bottom-0 left-0 w-full h-[1px] overflow-hidden transition-opacity duration-500 ${scrolled ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="absolute inset-0 bg-white/10" />
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent animate-[shimmer_3s_infinite] opacity-80" />
+        </div>
+
+        {/* MAIN CONTAINER */}
+        <div className="w-full max-w-[1500px] mx-auto px-6 lg:px-12 flex items-center justify-between">
+          
+          {/* --- LEFT: LOGO --- */}
+          <div className="flex-shrink-0 relative z-50">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              whileHover={{ 
+                scale: 1.05, 
+                filter: "drop-shadow(0 0 10px rgba(212, 175, 55, 0.6))"
+              }}
+              className="cursor-pointer"
+            >
+              <V5CLogo />
+            </motion.div>
           </div>
           
-          {/* DESKTOP NAVIGATION (Hidden on Mobile) */}
-          <div className="hidden xl:flex items-center gap-5 text-[9px] font-bold tracking-[0.15em] text-gray-300 uppercase">
+          {/* --- CENTER: DESKTOP NAVIGATION --- */}
+          <div className="hidden xl:flex items-center gap-5.5 text-[9px] font-bold tracking-[0.15em] text-white uppercase ml-auto mr-16">
             {content.nav.map(item => (
               <motion.a 
                 key={item} 
                 href={`#${item.toLowerCase().replace(/\s+/g, '')}`} 
-                className="hover:text-[#D4AF37] transition-all" 
-                whileHover={{ y: -2, color: "#D4AF37" }}
+                className="relative group transition-colors hover:text-[#D4AF37] py-2" 
+                whileHover={{ y: -2 }}
               >
                 {item}
+                <span className="absolute -bottom-1 left-1/2 w-1 h-1 bg-[#D4AF37] rounded-full opacity-0 group-hover:opacity-100 -translate-x-1/2 transition-all duration-300" />
               </motion.a>
             ))}
           </div>
 
-          {/* RIGHT SIDE ACTIONS */}
-          <div className="flex items-center gap-4 md:gap-6 relative z-50">
+          {/* --- RIGHT: ACTIONS --- */}
+          <div className="flex items-center justify-end gap-5 relative z-50">
             
-            {/* Language Switcher */}
-            <div className="hidden lg:flex gap-4 text-[10px] font-bold border-r border-white/10 pr-6">
-              {['EN', 'AR'].map(l => (
-                <motion.span 
-                  key={l} 
-                  onClick={() => setLang(l)} 
-                  className={`cursor-pointer uppercase transition-colors ${lang === l ? 'text-[#D4AF37] underline underline-offset-8 font-black' : 'text-white/40 hover:text-white'}`} 
-                  whileHover={{ scale: 1.2 }} 
-                  whileTap={{ scale: 0.9 }}
-                >
-                  {l}
-                </motion.span>
-              ))}
+            {/* --- LANGUAGE DROPDOWN (UPDATED) --- */}
+            <div className="hidden lg:relative lg:flex items-center text-[10px] font-bold border-r border-white/10 pr-6 h-6">
+              
+              {/* Dropdown Trigger */}
+              <button 
+                onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                className="flex items-center gap-1.5 text-white hover:text-[#D4AF37] transition-colors uppercase tracking-widest"
+              >
+                <span className="text-[#D4AF37] border-b border-[#D4AF37] pb-0.5">{lang}</span>
+                <ChevronDown size={12} className={`transition-transform duration-300 ${langDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Dropdown Menu */}
+              <AnimatePresence>
+                {langDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full left-[-10px] mt-4 w-24 bg-black/95 backdrop-blur-xl border border-white/10 shadow-2xl rounded-sm overflow-hidden py-1"
+                  >
+                    {['EN', 'AR', 'HI', 'HE'].filter(l => l !== lang).map((l) => (
+                      <button
+                        key={l}
+                        onClick={() => { setLang(l); setLangDropdownOpen(false); }}
+                        className="w-full text-left px-4 py-3 text-[10px] font-bold text-gray-400 hover:text-[#D4AF37] hover:bg-white/5 transition-colors uppercase tracking-widest flex items-center justify-between group"
+                      >
+                        {l}
+                        <span className="w-1 h-1 rounded-full bg-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
-            {/* Consult Button */}
+            {/* Consult Button - REDUCED SIZE */}
             <motion.button 
-              whileHover={buttonHover} 
+              whileHover={{ ...buttonHover, boxShadow: "0 0 15px rgba(212,175,55,0.4)" }}
               whileTap={buttonTap} 
-              className="hidden sm:block bg-[#D4AF37] text-black px-6 py-3 text-[10px] font-bold uppercase hover:bg-white transition-all shadow-xl"
+              className="hidden sm:block bg-[#D4AF37] text-black px-5 py-2.5 text-[9px] font-bold uppercase hover:bg-white transition-all shadow-lg rounded-sm tracking-wider"
             >
               {content.consultBtn}
             </motion.button>
 
-            {/* --- DESKTOP LOGIN / LOGOUT ICON --- */}
-            <div className="hidden sm:block">
+            {/* LOGIN / LOGOUT ICON */}
+            <div className="hidden sm:flex items-center">
               {user ? (
-                // If Logged In: Show Logout Icon
                 <motion.button 
                   onClick={onLogout} 
-                  whileHover={{ scale: 1.1, color: "#EF4444" }} 
-                  className="text-white bg-white/10 p-2 rounded-full hover:bg-white/20 transition-all" 
+                  whileHover={{ scale: 1.1, color: "#EF4444", backgroundColor: "rgba(255,255,255,0.2)" }} 
+                  className="text-white bg-white/10 p-2 rounded-full transition-all flex items-center justify-center" 
                   title="Logout"
                 >
-                  <LogOut size={18} />
+                  <LogOut size={16} />
                 </motion.button>
               ) : (
-                // If Logged Out: Show Login User Icon
                 <motion.button 
                   onClick={() => navigate('/login')} 
-                  whileHover={{ scale: 1.1, color: "#D4AF37" }} 
-                  className="text-white bg-white/10 p-2 rounded-full hover:bg-white/20 transition-all" 
+                  whileHover={{ scale: 1.1, color: "#D4AF37", backgroundColor: "rgba(255,255,255,0.2)", boxShadow: "0 0 10px rgba(212,175,55,0.3)" }} 
+                  className="text-white bg-white/10 p-2 rounded-full transition-all flex items-center justify-center" 
                   title="Login"
                 >
-                  <User size={18} />
+                  <User size={16} />
                 </motion.button>
               )}
             </div>
 
-            {/* Hamburger Button */}
+            {/* Hamburger Button (Mobile) */}
             <button 
               onClick={() => setMenuOpen(!menuOpen)} 
-              className="xl:hidden text-white p-2 hover:text-[#D4AF37] transition-colors"
+              className="xl:hidden text-white p-2 hover:text-[#D4AF37] transition-colors flex items-center justify-center"
             >
               {menuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
@@ -129,59 +170,63 @@ const Navbar = ({ lang, setLang, content, user, onLogout }) => { // Added user &
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: "-100%" }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="fixed inset-0 z-40 bg-black flex flex-col items-center justify-center space-y-8 xl:hidden"
+            className="fixed inset-0 z-40 bg-black flex flex-col items-center justify-center space-y-8 xl:hidden overflow-hidden"
           >
+            {/* Ambient Background Blob */}
+            <div className="absolute top-[-20%] right-[-20%] w-[400px] h-[400px] bg-[#D4AF37]/10 rounded-full blur-[100px]" />
+            <div className="absolute bottom-[-20%] left-[-20%] w-[300px] h-[300px] bg-[#D4AF37]/10 rounded-full blur-[100px]" />
+
             {/* Mobile Nav Links */}
-            {content.nav.map((item, i) => (
-              <motion.a 
-                key={item}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * i }}
-                href={`#${item.toLowerCase().replace(/\s+/g, '')}`} 
-                onClick={() => setMenuOpen(false)}
-                className="text-2xl font-black uppercase text-white tracking-[0.15em] hover:text-[#D4AF37] transition-colors"
-              >
-                {item}
-              </motion.a>
-            ))}
+            <div className="flex flex-col items-center gap-6">
+                {content.nav.map((item, i) => (
+                <motion.a 
+                    key={item}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * i }}
+                    href={`#${item.toLowerCase().replace(/\s+/g, '')}`} 
+                    onClick={() => setMenuOpen(false)}
+                    className="relative z-10 text-xl font-bold uppercase text-white tracking-[0.2em] hover:text-[#D4AF37] transition-colors"
+                >
+                    {item}
+                </motion.a>
+                ))}
+            </div>
 
-            {/* --- MOBILE LOGIN / LOGOUT LINK --- */}
-            {user ? (
-               <motion.a 
-                 onClick={() => { setMenuOpen(false); onLogout(); }}
-                 initial={{ opacity: 0, y: 20 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 className="text-2xl font-black uppercase text-red-500 tracking-[0.15em] cursor-pointer hover:text-white transition-colors"
-               >
-                 Logout
-               </motion.a>
-            ) : (
-               <motion.a 
-                 onClick={() => { setMenuOpen(false); navigate('/login'); }}
-                 initial={{ opacity: 0, y: 20 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 className="text-2xl font-black uppercase text-[#D4AF37] tracking-[0.15em] cursor-pointer hover:text-white transition-colors"
-               >
-                 Login / Admin
-               </motion.a>
-            )}
-
-            {/* Divider */}
-            <div className="h-px w-20 bg-white/20 my-8" />
+            <div className="h-px w-20 bg-white/20 my-4 relative z-10" />
 
             {/* Mobile Language Switcher */}
-            <div className="flex gap-8">
-               {['EN', 'AR'].map(l => (
+            <div className="flex gap-6 relative z-10">
+               {['EN', 'AR', 'HI', 'HE'].map(l => (
                 <span 
                   key={l} 
                   onClick={() => { setLang(l); setMenuOpen(false); }} 
-                  className={`text-sm font-bold cursor-pointer tracking-widest ${lang === l ? 'text-[#D4AF37] underline underline-offset-8' : 'text-gray-500'}`}
+                  className={`text-sm font-bold cursor-pointer tracking-widest px-3 py-2 rounded border ${lang === l ? 'border-[#D4AF37] text-[#D4AF37] bg-[#D4AF37]/10' : 'border-transparent text-gray-500 hover:text-white'}`}
                 >
                   {l}
                 </span>
                ))}
             </div>
+
+            {/* Mobile Actions */}
+            <div className="flex items-center gap-6 relative z-10 mt-4">
+                {user ? (
+                <button 
+                    onClick={() => { setMenuOpen(false); onLogout(); }}
+                    className="flex items-center gap-2 text-red-500 uppercase font-bold tracking-widest text-xs border border-red-500/30 px-6 py-3 rounded-full hover:bg-red-500/10 transition-colors"
+                >
+                    <LogOut size={16} /> Logout
+                </button>
+                ) : (
+                <button 
+                    onClick={() => { setMenuOpen(false); navigate('/login'); }}
+                    className="flex items-center gap-2 text-[#D4AF37] uppercase font-bold tracking-widest text-xs border border-[#D4AF37]/30 px-6 py-3 rounded-full hover:bg-[#D4AF37]/10 transition-colors"
+                >
+                    <User size={16} /> Login
+                </button>
+                )}
+            </div>
+
           </motion.div>
         )}
       </AnimatePresence>
@@ -189,4 +234,4 @@ const Navbar = ({ lang, setLang, content, user, onLogout }) => { // Added user &
   );
 };
 
-export default Navbar; 
+export default Navbar;
