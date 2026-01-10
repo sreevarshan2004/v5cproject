@@ -401,7 +401,7 @@ const PropertyDetail = ({ propertiesData }) => {
     if (property) { setLoading(false); return; }
     const fetch = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/properties/${id}`);
+        const res = await axios.get('https://v5c-backend.vercel.app/api/properties');
         setProperty(res.data);
       } catch (e) {
         const fallback = initialPropertiesData.find(p => p.id.toString() === id);
