@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Lato:wght@300;400;700&family=Oswald:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* ========================================
+   GLOBAL THEME CONFIGURATION
+   Change these values to update entire site
+======================================== */
+:root {
+  /* Background Colors - WHITE THEME */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F9FAFB;
+  --bg-tertiary: #F3F4F6;
+
+  /* Text Colors */
+  --text-primary: #0B1A2E;
+  --text-secondary: #4B5563;
+  --text-muted: #6B7280;
+
+  /* Accent Colors */
+  --accent-gold: #D4AF37;
+  --accent-gold-dark: #B8941F;
+  --accent-gold-light: #E5C158;
+
+  /* Border Colors */
+  --border-light: rgba(0, 0, 0, 0.1);
+  --border-medium: rgba(0, 0, 0, 0.15);
+
+  /* Shadow Colors */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* ========================================
+   GLOBAL THEME CLASSES
+======================================== */
+
+/* Section Backgrounds */
+.section-bg-primary {
+  background-color: var(--bg-primary);
+}
+
+.section-bg-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.section-bg-tertiary {
+  background-color: var(--bg-tertiary);
+}
+
+/* Text Styles */
+.text-theme-primary {
+  color: var(--text-primary);
+}
+
+.text-theme-secondary {
+  color: var(--text-secondary);
+}
+
+.text-theme-muted {
+  color: var(--text-muted);
+}
+
+.text-theme-accent {
+  color: var(--accent-gold);
+}
+
+/* Card Styles */
+.card-theme {
+  background-color: #0B1A2E;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  color: #FFFFFF;
+}
+
+.card-theme:hover {
+  border-color: var(--accent-gold);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Card Text Overrides */
+.card-theme .text-theme-primary {
+  color: #FFFFFF;
+}
+
+.card-theme .text-theme-secondary {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.card-theme .text-theme-muted {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Border Styles */
+.border-theme {
+  border-color: var(--border-light);
+}
+
+.border-theme-medium {
+  border-color: var(--border-medium);
+}
+
+.border-theme-accent {
+  border-color: var(--accent-gold);
+}
+
+/* Button Styles */
+.btn-theme-primary {
+  background-color: var(--accent-gold);
+  color: #000000;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.btn-theme-primary:hover {
+  background-color: var(--accent-gold-dark);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+body {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+.group:hover .group-hover\:shadow-gold {
+  box-shadow: var(--shadow-lg);
+}
+
+/* --- PROFESSIONAL LOGO SHINE --- */
+@keyframes shimmer-glint {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+
+  25% {
+    transform: translateX(150%) skewX(-20deg);
+  }
+
+  100% {
+    transform: translateX(150%) skewX(-20deg);
+  }
+}
+
+/* Advanced Aurora Background Animation */
+@keyframes aurora {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-aurora {
+  background: linear-gradient(-45deg, var(--bg-primary), var(--bg-secondary), var(--bg-tertiary), var(--bg-primary));
+  background-size: 400% 400%;
+  animation: aurora 15s ease infinite;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-gold);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
